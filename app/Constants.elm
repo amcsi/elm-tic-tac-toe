@@ -1,7 +1,4 @@
-module Constants (boardSize, gridWidth) where
+module Constants (boardSize) where
 
-boardSize : (Int, Int)
+boardSize : (Float, Float)
 boardSize = (300, 300)
-
-gridWidth : Float
-gridWidth = 10.0
