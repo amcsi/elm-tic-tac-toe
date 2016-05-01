@@ -10,7 +10,7 @@ console.info('outputPath', outputPath);
 module.exports = {
   entry: {
     app: [
-      `webpack-dev-server/client?http://localhost:$(port)`,
+      `webpack-dev-server/client?http://localhost:${port}`,
       path.join(__dirname, 'app/index.js'),
     ],
   },
