@@ -4,13 +4,13 @@ import Signal exposing (Address)
 import Action exposing (Action)
 import Model exposing (Model)
 import Maybe exposing (withDefault, Maybe(Just))
-import Graphics.Collage exposing (group, rotate, segment, traced, Form, LineCap(Round), LineJoin(Smooth), LineStyle, Path)
+import Graphics.Collage exposing (group, move, rotate, path, traced, Form, LineCap(Round), LineJoin(Smooth), LineStyle, Path)
 import Color exposing (Color)
 import Constants exposing (boardSize)
 import List exposing (..)
 
 grid : Address Action -> Model -> List Form
-grid address model = drawGrid boardSize (3, 3) gridWidth
+grid address model = drawGrid boardSize (3, 3)
 
 gridWidth : Float
 gridWidth = 10.0
@@ -27,6 +27,10 @@ lineStyle = { color = Color.black
   , dashOffset = 0
   }
 
+bottomLeftToCenter : Form -> Form
+bottomLeftToCenter form =
+  move (negate <| fst boardSize / 2, negate <| snd boardSize / 2) form
+
 -- Get a list of split points to split a line into n equal lines
 -- e.g. splitPoints 600 3 = [200.0, 400.0]
 splitPoints : Float -> Int -> List Float
@@ -37,34 +41,36 @@ splitPoints width splitCount =
     _ ->
       let
         firstPoint = width / splitCount
-        repeated = repeat (splitCount - 2) firstPoint
-        folder : Float -> List Float -> List Float
-        folder firstNumber accumulated =
-          let lastValue =
-            withDefault 0 (head << reverse <| accumulated)
-          in append accumulated <| [lastValue + firstNumber]
-      in foldl folder [firstPoint] repeated
+        repeated = repeat splitCount ()
+        mapper : Int -> () -> Float
+        mapper index _ = toFloat index * firstPoint
+      in indexedMap mapper repeated
+          |> tail
+          |> withDefault []
 
-drawGridLines : Bool -> Float -> List Float -> Form
-drawGridLines isVertical max splitPoints' =
+drawGridLines : Bool -> (Float, Float) -> Int -> Form
+drawGridLines isVertical (width, height) parts =
   let
-    halfBoardSize = max / 2
-    -- because we need them to be offset by the center
-    splitPointsWithOffset = map (\splitPoints -> splitPoints - halfBoardSize) splitPoints'
+    (perpendicularSize, parallelSize) = if isVertical then (width, height) else (height, width)
+    splitPoints' = splitPoints perpendicularSize parts
+    flipPathIfVertical : List (Float, Float) -> List (Float, Float)
+    flipPathIfVertical list =
+      if isVertical then map (\(x, y) -> (y, x)) list else list
     rotateIfVertical : Form -> Form
     rotateIfVertical form =
       if isVertical then form else rotate (degrees 90) form
-    mapper : Float -> Path
+    mapper : Float -> Form
     mapper splitPoint =
-      segment (margin - halfBoardSize, splitPoint) (halfBoardSize - margin, splitPoint)
-  in map mapper splitPointsWithOffset
-    |> map (\path -> traced lineStyle path)
+      flipPathIfVertical [(margin, splitPoint), (parallelSize - margin, splitPoint)]
+        |> path
+        |> traced lineStyle
+  in map mapper splitPoints'
     |> group
-    |> rotateIfVertical
+    |> bottomLeftToCenter
 
 -- Draws a grid onto a canvas of a given size, splitting the view into given amount by amount of spaces, with a given line width
-drawGrid : (Float, Float) -> (Int, Int) -> Float -> List Form
-drawGrid (canvasWidth, canvasHeight) (horizontalSpots, verticalSpots) lineWidth =
-  [ drawGridLines False canvasWidth <| splitPoints canvasWidth horizontalSpots
-  , drawGridLines True canvasHeight <| splitPoints canvasHeight verticalSpots
+drawGrid : (Float, Float) -> (Int, Int) -> List Form
+drawGrid size (horizontalSpots, verticalSpots) =
+  [ drawGridLines False size horizontalSpots
+  , drawGridLines True size verticalSpots
   ]
