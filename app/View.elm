@@ -12,5 +12,5 @@ view : Address Action -> Model -> Html
 view address model =
   div []
     [ h1 [] [ text "Tic-Tac-Toe" ]
-    , fromElement <| collage (fst boardSize) (snd boardSize) <| board address model
+    , fromElement <| collage (floor <| fst boardSize) (floor <| snd boardSize) <| board address model
     ]

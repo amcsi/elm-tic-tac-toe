@@ -1,3 +1,7 @@
-module Model (Model) where
+module Model (Model, Piece(..)) where
 
-type alias Model = ()
+type Piece = X | O | Blank
+
+type alias Model = {
+  board : List Piece
+}
