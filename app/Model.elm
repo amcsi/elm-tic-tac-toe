@@ -1,7 +1,9 @@
-module Model (Model, Piece(..)) where
+module Model (Model) where
 
-type Piece = X | O | Blank
+import Types exposing (Piece, Player)
 
-type alias Model = {
-  board : List Piece
+type alias Model =
+  { board : List Piece
+  , turnPlayer : Player
+  , pieceOfPlayer : Piece
 }

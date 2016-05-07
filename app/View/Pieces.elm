@@ -6,15 +6,15 @@ import Color exposing (blue, red)
 import Signal exposing (Address)
 import Action exposing (Action)
 import Graphics.Collage exposing (Form, LineStyle, defaultLine, move, path, outlined, oval)
-import Constants exposing (..)
 import List exposing (concat, indexedMap)
+import Types exposing (Piece(..))
+import Size exposing (unitSize)
+import Size exposing (Size)
+import Location exposing (fromZone, Location)
+import Zone exposing (fromFlat, Zone)
 
 pieces : Address Action -> Model -> List Form
 pieces address model = drawPieces model.board
-
--- Converts a flat index to a 2d index
-coords2D : Int -> (Int, Int)
-coords2D flatIndex = (flatIndex `rem` (fst boardZones), flatIndex // (snd boardZones))
 
 lineStyle : LineStyle
 lineStyle = { defaultLine | width = 10 }
@@ -25,17 +25,17 @@ drawPieces board =
   let
     mapper : Int -> Piece -> Form
     mapper index piece =
-      group <| drawPiece piece <| coords2D index
+      group <| drawPiece piece <| fromFlat index
   in indexedMap mapper board
 
 -- Draws a piece
-drawPiece : Piece -> (Int, Int) -> List Form
+drawPiece : Piece -> Zone -> List Form
 drawPiece piece (x, y) =
   case piece of
     X ->
       let
         lineStyle' = { lineStyle | color = blue }
-        coords = getCoords (x, y)
+        coords = fromZone (x, y)
         line1 =
           [ ( negate <| fst cornerBoundaryLocalCoords
             , negate <| snd cornerBoundaryLocalCoords
@@ -62,7 +62,7 @@ drawPiece piece (x, y) =
       let
         lineStyle' = { lineStyle | color = red }
         oval' = uncurry oval ( fst cornerBoundaryLocalCoords * 2, snd cornerBoundaryLocalCoords * 2)
-        coords = getCoords (x, y)
+        coords = fromZone (x, y)
       in [ outlined lineStyle' oval' |> move coords ]
     _ -> []
 
@@ -71,27 +71,10 @@ gridWidth : Float
 gridWidth = 20
 
 -- The effective amount of horizontal and vertical pixels the corner for drawing is inside a zone relative to the center
-cornerBoundaryLocalCoords : (Float, Float)
+cornerBoundaryLocalCoords : Size
 cornerBoundaryLocalCoords =
   let
     a = fst unitSize / 2
     b = snd unitSize / 2
   in
     (a - gridWidth, b - gridWidth)
-
--- The horizontal and vertical pixel size of a single box
-unitSize : (Float, Float)
-unitSize =
-  let
-    unitWidth = fst boardSize / (toFloat <| fst boardZones)
-    unitHeight = snd boardSize / (toFloat <| snd boardZones)
-  in (unitWidth, unitHeight)
-
--- Gets the center pixel coordinates of the given zone coords
-getCoords : (Int, Int) -> (Float, Float)
-getCoords (x, y) =
-  let
-    xFromCenter = toFloat x - (toFloat <| fst boardZones - 1) / 2
-    yFromCenter = toFloat y - (toFloat <| snd boardZones - 1) / 2
-  in
-    (xFromCenter * fst unitSize, yFromCenter * snd unitSize)

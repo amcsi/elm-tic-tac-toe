@@ -1,3 +1,5 @@
-module Action (Action) where
+module Action (Action(..)) where
 
-type alias Action = ()
+type Action =
+  PlacePieceInIndex Int
+  | NoOp
