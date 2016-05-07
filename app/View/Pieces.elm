@@ -7,15 +7,28 @@ import Signal exposing (Address)
 import Action exposing (Action)
 import Graphics.Collage exposing (Form, LineStyle, defaultLine, move, path, outlined, oval)
 import Constants exposing (..)
-import List exposing (concat)
+import List exposing (concat, indexedMap)
 
 pieces : Address Action -> Model -> List Form
-pieces address model =
-  [ group <| concat <| [ drawPiece X (0, 0), drawPiece O (0, 1) ] ]
+pieces address model = drawPieces model.board
+
+-- Converts a flat index to a 2d index
+coords2D : Int -> (Int, Int)
+coords2D flatIndex = (flatIndex `rem` (fst boardZones), flatIndex // (snd boardZones))
 
 lineStyle : LineStyle
 lineStyle = { defaultLine | width = 10 }
 
+-- Draws pieces based on the board
+drawPieces : List Piece -> List Form
+drawPieces board =
+  let
+    mapper : Int -> Piece -> Form
+    mapper index piece =
+      group <| drawPiece piece <| coords2D index
+  in indexedMap mapper board
+
+-- Draws a piece
 drawPiece : Piece -> (Int, Int) -> List Form
 drawPiece piece (x, y) =
   case piece of
@@ -53,9 +66,11 @@ drawPiece piece (x, y) =
       in [ outlined lineStyle' oval' |> move coords ]
     _ -> []
 
+-- Magic number that ought to be more dynamic
 gridWidth : Float
 gridWidth = 20
 
+-- The effective amount of horizontal and vertical pixels the corner for drawing is inside a zone relative to the center
 cornerBoundaryLocalCoords : (Float, Float)
 cornerBoundaryLocalCoords =
   let
@@ -64,6 +79,7 @@ cornerBoundaryLocalCoords =
   in
     (a - gridWidth, b - gridWidth)
 
+-- The horizontal and vertical pixel size of a single box
 unitSize : (Float, Float)
 unitSize =
   let
@@ -71,6 +87,7 @@ unitSize =
     unitHeight = snd boardSize / (toFloat <| snd boardZones)
   in (unitWidth, unitHeight)
 
+-- Gets the center pixel coordinates of the given zone coords
 getCoords : (Int, Int) -> (Float, Float)
 getCoords (x, y) =
   let
