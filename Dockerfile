@@ -18,7 +18,8 @@ COPY elm-package.json /src
 RUN node_modules/.bin/elm-package install -y
 
 COPY . .
-ENV NODE_ENV=production
-RUN npm run build
+# LC_ALL needs to be set to C.UTF-8, otherwise compiling elm doesn't work too well.
+# https://github.com/elm-lang/elm-make/issues/33
+RUN NODE_ENV=production LC_ALL=C.UTF-8 npm run build
 EXPOSE  8080
 CMD ["npm", "run", "start"]
