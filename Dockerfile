@@ -14,7 +14,7 @@ COPY package.json /src
 RUN npm set progress=false && npm set color=false && npm install
 
 COPY elm-package.json /src
-RUN elm-package install
+RUN node_modules/.bin/elm-package install
 
 COPY . .
 ENV NODE_ENV=production
