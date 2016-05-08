@@ -1,9 +1,8 @@
 module View (view) where
 
 import Graphics.Collage exposing (collage, toForm)
-import Graphics.Input exposing (clickable)
 import Signal exposing (Address, Signal)
-import Action exposing (Action(ClickBoard))
+import Action exposing (Action)
 import Model exposing (Model)
 import Html exposing (div, h1, text, Html, fromElement)
 import Constants exposing (boardSize)
