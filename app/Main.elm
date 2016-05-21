@@ -1,19 +1,17 @@
 import Html exposing (Html)
-import StartApp exposing (App)
+import Html.App exposing (program)
 import Model exposing (Model)
 import View exposing (view)
 import Update exposing (update)
 import Init exposing (init)
-import Inputs exposing (inputs)
 
-app : App Model
+app : Program Never
 app =
-  StartApp.start
+  program
     { init = init
     , update = update
     , view = view
-    , inputs = inputs
+    , subscriptions = \_ -> Sub.none
     }
 
-main : Signal Html
-main = app.html
+main = app

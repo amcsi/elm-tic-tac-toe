@@ -1,4 +1,4 @@
-module Size (unitSize, Size) where
+module Size exposing (unitSize, Size)
 
 import Constants exposing (..)
 

@@ -1,16 +1,15 @@
-module View.Grid (grid) where
+module View.Grid exposing (grid)
 
-import Signal exposing (Address)
 import Action exposing (Action)
 import Model exposing (Model)
 import Maybe exposing (withDefault, Maybe(Just))
-import Graphics.Collage exposing (group, move, rotate, path, traced, Form, LineCap(Round), LineJoin(Smooth), LineStyle, Path)
+import Collage exposing (group, move, rotate, path, traced, Form, LineCap(Round), LineJoin(Smooth), LineStyle, Path)
 import Color exposing (Color)
 import Constants exposing (boardSize, boardZones)
 import List exposing (..)
 
-grid : Address Action -> Model -> List Form
-grid address model = drawGrid boardSize boardZones
+grid : Model -> List Form
+grid model = drawGrid boardSize boardZones
 
 gridWidth : Float
 gridWidth = 10.0

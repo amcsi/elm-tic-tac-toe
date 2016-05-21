@@ -1,4 +1,4 @@
-module Types (Player(..), Piece(..)) where
+module Types exposing (Player(..), Piece(..))
 
 type Player = Player1 | Player2
 

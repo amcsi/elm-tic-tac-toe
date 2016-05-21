@@ -1,11 +1,9 @@
-module View.Pieces (pieces) where
+module View.Pieces exposing (pieces)
 
 import Model exposing (..)
-import Graphics.Collage exposing (group, traced)
+import Collage exposing (Form, LineStyle, defaultLine, group, move, path, outlined, oval, traced)
 import Color exposing (blue, red)
-import Signal exposing (Address)
 import Action exposing (Action)
-import Graphics.Collage exposing (Form, LineStyle, defaultLine, move, path, outlined, oval)
 import List exposing (concat, indexedMap)
 import Types exposing (Piece(..))
 import Size exposing (unitSize)
@@ -13,8 +11,8 @@ import Size exposing (Size)
 import Location exposing (fromZone, Location)
 import Zone exposing (fromFlat, Zone)
 
-pieces : Address Action -> Model -> List Form
-pieces address model = drawPieces model.board
+pieces : Model -> List Form
+pieces model = drawPieces model.board
 
 lineStyle : LineStyle
 lineStyle = { defaultLine | width = 10 }

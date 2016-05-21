@@ -1,19 +1,19 @@
-module View (view) where
+module View exposing (view)
 
-import Graphics.Collage exposing (collage, toForm)
-import Signal exposing (Address, Signal)
+import Collage exposing (collage, toForm)
+import Element exposing (toHtml)
 import Action exposing (Action)
 import Model exposing (Model)
-import Html exposing (div, h1, text, Html, fromElement)
+import Html exposing (div, h1, text, Html)
 import Constants exposing (boardSize)
 import View.Board exposing (board)
 
-view : Address Action -> Model -> Html
-view address model =
+view : Model -> Html msg
+view model =
   let collageHtml =
-    board address model
+    board model
     |> collage (floor <| fst boardSize) (floor <| snd boardSize)
-    |> fromElement
+    |> toHtml
   in
     div []
       [ h1 [] [ text "Tic-Tac-Toe" ]

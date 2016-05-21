@@ -1,5 +1,5 @@
 -- Module related to the zones of the board (3x3)
-module Zone (fromFlat, Zone) where
+module Zone exposing (fromFlat, Zone)
 import Constants exposing (boardZones)
 
 type alias Zone = (Int, Int)

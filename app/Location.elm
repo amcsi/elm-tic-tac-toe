@@ -1,4 +1,4 @@
-module Location (fromIndex, fromZone, Location) where
+module Location exposing (fromIndex, fromZone, Location)
 
 import Size exposing (unitSize)
 import Zone exposing (fromFlat)

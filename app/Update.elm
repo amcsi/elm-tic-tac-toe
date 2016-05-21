@@ -1,12 +1,11 @@
-module Update (update) where
+module Update exposing (update)
 
-import Effects exposing (Effects)
 import Action exposing (Action(..))
 import Model exposing (Model)
 import List exposing (indexedMap)
 import Types exposing (Piece(..), Player(..))
 
-update : Action -> Model -> (Model, Effects Action)
+update : Action -> Model -> (Model, Cmd Action)
 update action model =
   case action of
     -- Place a piece in the given index; assumed the move is legal
@@ -29,6 +28,6 @@ update action model =
         , pieceOfPlayer =
           if model.pieceOfPlayer == X then O else X
         }
-      , Effects.none
+      , Cmd.none
       )
-    _ -> (model, Effects.none)
+    _ -> (model, Cmd.none)

@@ -1,4 +1,4 @@
-module Constants (boardSize, boardZones) where
+module Constants exposing (boardSize, boardZones)
 
 boardSize : (Float, Float)
 boardSize = (300, 300)
