@@ -26,7 +26,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "compression": "^1.6.1",
     "elm": "^0.17.0",
-    "elm-webpack-loader": "^3.0.1",
+    "elm-webpack-loader": "^3.0.2",
     "express": "^4.13.4",
     "rimraf": "^2.5.2",
     "webpack": "^1.13.0",
