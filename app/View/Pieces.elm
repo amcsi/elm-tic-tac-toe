@@ -18,16 +18,18 @@ lineStyle : LineStyle
 lineStyle = { defaultLine | width = 10 }
 
 -- Draws pieces based on the board
-drawPieces : List Piece -> List Form
+drawPieces : List (Maybe Piece) -> List Form
 drawPieces board =
   let
-    mapper : Int -> Piece -> Form
+    mapper : Int -> (Maybe Piece) -> List Form
     mapper index piece =
-      group <| drawPiece piece <| fromFlat index
-  in indexedMap mapper board
+      case piece of
+        Just piece -> [drawPiece piece <| fromFlat index]
+        Nothing -> []
+  in List.concat <| indexedMap mapper board
 
 -- Draws a piece
-drawPiece : Piece -> Zone -> List Form
+drawPiece : Piece -> Zone -> Form
 drawPiece piece (x, y) =
   case piece of
     X ->
@@ -51,18 +53,16 @@ drawPiece piece (x, y) =
             )
           ]
       in
-        [ move coords <| group
+        move coords <| group
           [ traced lineStyle' <| path line1
           , traced lineStyle' <| path line2
           ]
-        ]
     O ->
       let
         lineStyle' = { lineStyle | color = red }
         oval' = uncurry oval ( fst cornerBoundaryLocalCoords * 2, snd cornerBoundaryLocalCoords * 2)
         coords = fromZone (x, y)
-      in [ outlined lineStyle' oval' |> move coords ]
-    _ -> []
+      in outlined lineStyle' oval' |> move coords
 
 -- Magic number that ought to be more dynamic
 gridWidth : Float

@@ -13,10 +13,10 @@ update action model =
       ( { model |
           board =
             let
-                mapper : Int -> Piece -> Piece
+                mapper : Int -> Maybe Piece -> Maybe Piece
                 mapper index currentPiece =
                   if index == flatIndex
-                  then model.pieceOfPlayer
+                  then if currentPiece == Nothing then Just model.pieceOfPlayer else currentPiece
                   else currentPiece
             in indexedMap mapper model.board
         -- Flip the turn players
