@@ -18,4 +18,4 @@ toFlat (x, y) =
 -- Lists all the possible zones
 listZones : List Zone
 listZones =
-  List.concatMap (\x -> List.map (\y -> (x, y)) [0..2]) [0..2]
+  List.concatMap (\y -> List.map (\x -> (x, y)) [0..boardX-1]) [0..boardY-1]

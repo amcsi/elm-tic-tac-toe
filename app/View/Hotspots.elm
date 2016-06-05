@@ -10,6 +10,7 @@ import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 import View.Style.Size exposing (heightWidth)
 
+-- Returns invisible divs that catches clicks.
 hotspots : List (Html Action)
 hotspots =
   let
@@ -26,7 +27,3 @@ hotspots =
         ]
         []
   in List.map mapper listZones
-
-
-
-
