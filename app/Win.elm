@@ -1,4 +1,4 @@
-module Win exposing (check, Win)
+module Win exposing (checkWins)
 
 import Maybe exposing (Maybe(..))
 import Constants exposing (boardZones)
@@ -6,7 +6,7 @@ import Zone exposing (Zone, listZones, toFlat)
 import List exposing (foldr)
 import Model exposing (Model)
 import Helper.Piece exposing (indexPieces, opposite, IndexedPiece)
-import Types exposing (Piece, Player)
+import Types exposing (Board, Piece, Player, Win)
 import Helper.Piece exposing (owner)
 
 (boardX, boardY) = boardZones
@@ -14,11 +14,6 @@ import Helper.Piece exposing (owner)
 type WinCheck =
   Winning Piece
   | NoWin
-
-type alias Win =
-  { player: Player
-  , zones: List Zone
-  }
 
 type alias IndexedMaybePiece = (Int, Maybe Piece)
 
@@ -31,19 +26,19 @@ getPiecesListByZoneList zones board =
       case pieces of
         [] -> []
         piece :: pieces' ->
-          let recursiveResult = iteratePieces (index + 1) pieces
+          let recursiveResult = iteratePieces (index + 1) pieces'
           in if List.member index indexes then piece :: recursiveResult  else recursiveResult
   in iteratePieces 0 board
 
 
 -- Returns the list of Wins for the model
-checkWins : Model -> List Win
-checkWins model =
+checkWins : Board -> List Win
+checkWins board =
   let
     winZoneCombinationMapper : List Zone -> List Win
     winZoneCombinationMapper zones =
       let
-        pieces = getPiecesListByZoneList zones model.board
+        pieces = getPiecesListByZoneList zones board
         winCheck = check pieces
       in
         case winCheck of
@@ -74,7 +69,7 @@ winZoneCombinations =
             diagonalMapper : Int -> Zone
             diagonalMapper index =
               (index, if inverse then (boardY - 1 - index) else index)
-          in List.map diagonalMapper [0..boardY]
+          in List.map diagonalMapper [0..(boardY-1)]
       in List.map mapper [True, False]
   in List.concat [horizontals, verticals, diagonals]
 

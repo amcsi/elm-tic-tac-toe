@@ -1,9 +1,10 @@
 module Model exposing (Model)
 
-import Types exposing (Piece, Player)
+import Types exposing (Board, Piece, Player, Win)
 
 type alias Model =
-  { board : List (Maybe Piece)
+  { board : Board
   , turnPlayer : Player
   , pieceOfPlayer : Piece
+  , wins : List Win
   }

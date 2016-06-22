@@ -11,6 +11,7 @@ init =
   ( { board = repeat (fst boardZones * snd boardZones) Nothing
     , turnPlayer = Player1
     , pieceOfPlayer = X
+    , wins = []
     }
   , Cmd.none
   )
